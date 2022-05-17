@@ -5,8 +5,8 @@ import styled, {
   ThemedStyledInterface,
   ThemeProvider as SCThemeProvider,
 } from 'styled-components';
-import { ThemeProvider as MUIThemeProvider } from '@material-ui/core';
-import { createTheme } from '@material-ui/core/styles';
+import { ThemeProvider as MUIThemeProvider, adaptV4Theme } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
 
 const COLOR_PALETTE = {
   red: {
@@ -81,7 +81,7 @@ export const THEME = {
   },
 } as const;
 
-export const MUI_THEME = createTheme({
+export const MUI_THEME = createTheme(adaptV4Theme({
   typography: {
     htmlFontSize: 10,
   },
@@ -93,7 +93,7 @@ export const MUI_THEME = createTheme({
       main: THEME.colors.secondary.normal,
     },
   },
-});
+}));
 
 export type Theme = typeof THEME;
 
