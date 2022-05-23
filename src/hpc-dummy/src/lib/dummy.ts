@@ -3,6 +3,7 @@ import { Session } from '@unocha/hpc-core';
 import {
   Model,
   access,
+  flows,
   operations,
   reportingWindows,
   errors,
@@ -478,6 +479,37 @@ export class Dummy {
             }
             this.store();
             return this.getAccessForTarget(target);
+          }
+        ),
+      },
+      flows: {
+        getFlows: dummyEndpoint('flows.getFLows', async () => ({
+          data: this.data.operations,
+          permissions: {
+            canAddFlow: true,
+          },
+        })),
+        getFlow: dummyEndpoint(
+          'flows.getFlow',
+          async ({ id }: flows.GetFlowParams) => {
+            const op = this.data.operations.filter((op) => op.id === id);
+            if (op.length === 1) {
+              const r: flows.GetFlowResult = {
+                data: {
+                  ...op[0],
+                  permissions: {
+                    canModifyAccess: this.userHasAccess([
+                      {
+                        target: { type: 'global' },
+                        role: 'hpc_admin',
+                      },
+                    ]),
+                  },
+                },
+              };
+              return r;
+            }
+            throw new errors.NotFoundError();
           }
         ),
       },
